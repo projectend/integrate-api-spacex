@@ -11,8 +11,6 @@ import type { ColumnsType } from 'antd/es/table';
 import 'antd/dist/antd.css';
 import React from 'react';
 
-
-
 const client = new ApolloClient({
   uri:"https://api.spacex.land/graphql/",
   cache: new InMemoryCache()
@@ -33,8 +31,6 @@ const VocabList = ({ text = "" }) => {
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error :</p>;
 
-  console.log("babyQ",data)
-
   const arraypushdata : DataType[]  = [];
 
   interface DataType {
@@ -42,23 +38,23 @@ const VocabList = ({ text = "" }) => {
     name: string;
     wikipedia: string;
   }
-
+  
   const columns: ColumnsType<DataType> = [
     {
-      title: 'Manufacturers',
+      title: 'manufacturers',
       dataIndex: 'manufacturers',
     },
     {
-      title: 'Name',
+      title: 'name',
       dataIndex: 'name',
     },
     {
-      title: 'Wikipedia',
+      title: 'wikipedia',
       dataIndex: 'wikipedia',
     },
   ];
-  // notice the parentheses, to avoid confusion with a block scope
-  data.missions.map(val => 
+
+  data.missions.map((val: any) => 
     arraypushdata.push ({
     manufacturers : val.manufacturers,
     name: val.name,
@@ -66,14 +62,11 @@ const VocabList = ({ text = "" }) => {
   } as DataType)
   );
 
-
 console.log(arraypushdata,"arraypushdata");
 
   return (
     <div>
     <Table columns={columns} dataSource={arraypushdata} size="middle" />
-    <Button type="link">Link Button</Button>
-
     </div>
   );
 };
