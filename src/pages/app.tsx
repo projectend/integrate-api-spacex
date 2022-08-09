@@ -253,8 +253,8 @@ const onSearch = (value: string) => {
   return (
     <div>
     
-    <Layout>
-    <Header className="header">
+    <Layout style={{width:'100%'}}>
+    <Header className="header" style={{width:'2000px'}}>
       <div className="logo" />
       <Menu theme="dark" mode="horizontal" defaultSelectedKeys={['2']} items={items1} />
       <Row>
@@ -297,9 +297,9 @@ const onSearch = (value: string) => {
             items={items2}
           />
         </Sider>
-        <Content style={{ padding: '0 24px', minHeight: 280 }}>
+        <Content style={{ padding: '0 24px' }}>
               {/* รูปแบบตาม Antd */}
-              <Table columns={columns} dataSource={arraypushdata}   size="middle" />
+              <Table columns={columns} dataSource={arraypushdata} size="middle" />
         </Content>
       </Layout>
     </Content>
@@ -323,9 +323,11 @@ const onSearch = (value: string) => {
           <Modal style={{width:"800"}} title="Basic Modal" visible={modalshow2} onOk={handleOk2}  onCancel={handleCancel2}>
              
               <Table columns={columns2} dataSource={arraypushdata2} size="middle" />
+
           </Modal>
 
       </Col>
+
     </Row>
    
     </div>
