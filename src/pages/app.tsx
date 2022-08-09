@@ -253,8 +253,8 @@ const onSearch = (value: string) => {
   return (
     <div>
     
-    <Layout style={{width:'100%'}}>
-    <Header className="header" style={{width:'100%'}}>
+    <Layout style={{width: 'auto'}}>
+    <Header className="header" style={{width: 'auto'}}>
       <div className="logo" />
       <Menu theme="dark" mode="horizontal" defaultSelectedKeys={['2']} items={items1} />
       <Row>
