@@ -270,7 +270,7 @@ const onSearch = (value: string) => {
                 }
               >
                 {arraypushdata.map((data:DataType)=>
-                    <Option value={data.name}>{data.roles}</Option>
+                    <Option key={1} value={data.name}>{data.roles}</Option>
                 )}
          </Select>
        </Col>
