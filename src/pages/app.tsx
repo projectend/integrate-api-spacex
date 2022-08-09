@@ -299,7 +299,7 @@ const onSearch = (value: string) => {
         </Sider>
         <Content style={{ padding: '0 24px' }}>
               {/* รูปแบบตาม Antd */}
-              <Table columns={columns} dataSource={arraypushdata} size="middle" id="widthhendres" />
+              <Table columns={columns} dataSource={arraypushdata} size="small" id="widthhendres" />
         </Content>
       </Layout>
     </Content>
