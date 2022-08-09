@@ -30,7 +30,8 @@ const VocabList = () => {
   const [modalshow2,setmodalshow2] = useState(false);
   const { Header, Content, Footer, Sider } = Layout;
   const [collapsed, setCollapsed] = useState(false);
-  const [arraypushdata3,setarraypushdata3] = useState([]);
+  const arraypushdata2 : DataType2[]  = [];
+  const [arraypushdata3,setarraypushdata3] = useState(arraypushdata2);
 
 // MANU TAB
 const items1: MenuProps['items'] = ['1', '2', '3'].map(key => ({
@@ -82,7 +83,7 @@ const items2: MenuProps['items'] = [UserOutlined, LaptopOutlined, NotificationOu
 
 //สร้าง arraypushdata สำหรับรองรับ data ที่ return จาก useQuery
   const arraypushdata : DataType[]  = [];
-  const arraypushdata2 : DataType2[]  = [];
+  
   
 
   interface DataType {
