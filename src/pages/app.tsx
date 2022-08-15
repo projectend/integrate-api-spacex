@@ -15,7 +15,6 @@ import type { MenuProps } from 'antd';
 import 'antd/dist/antd.css';
 import React from 'react';
 
-import {Appfunction} from "./appfunction"
 
 // สร้าง object จาก class ApolloClient กำหนด url และ cache
 const client = new ApolloClient({
@@ -175,7 +174,7 @@ const shipresult = useQuery(shopresultconnect,{variables: {offset:0,  limit: 5 }
       dataIndex: 'image',
       render: (text,record) => (
         <span>
-          {<Image width={200} src={record.image} /> }
+          <Image width={200} src={record.image} alt="description of image"/> 
         </span>
       ),
       
@@ -233,7 +232,7 @@ const shipresult = useQuery(shopresultconnect,{variables: {offset:0,  limit: 5 }
       dataIndex: 'image',
       render: (text,record) => (
         <span>
-          {<Image width={200} src={record.image} /> }
+          {<Image width={200} src={record.image} alt="description of image" /> }
         </span>
       ),
       
@@ -302,9 +301,7 @@ const handleCancel2 = (e: any) => {
 const { Option } = Select;
 
 const onChange = (value: string) => {
-  console.log(`Appfunctio111n`, Appfunction(2));
   console.log(`selected ${value}`);
-  // setdatasearch(value);
 };
 
 const onChange2 = (value: number) => {
