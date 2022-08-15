@@ -5,7 +5,7 @@ import {
   useQuery,
   gql
 } from "@apollo/client";
-import { useState } from "react";
+import { useState , useContext } from "react";
 import { Table , Input , Col, Row ,Select,Badge,Image ,Modal,Button,Breadcrumb, Layout, Menu } from 'antd';
 import { LaptopOutlined, NotificationOutlined, UserOutlined } from '@ant-design/icons';
 
@@ -15,6 +15,7 @@ import type { MenuProps } from 'antd';
 import 'antd/dist/antd.css';
 import React from 'react';
 
+import {Appfunction} from "./appfunction"
 
 // สร้าง object จาก class ApolloClient กำหนด url และ cache
 const client = new ApolloClient({
@@ -29,8 +30,37 @@ const VocabList = () => {
   const [resultsearch,setresultsearch] = useState(false);
   const [modalshow2,setmodalshow2] = useState(false);
   const { Header, Content, Footer, Sider } = Layout;
-  const [collapsed, setCollapsed] = useState(false);
+  const [shipsResult,setshipsResult] = useState(0);
 
+
+  const arraypushdata : DataType[]  = [];
+  const arraypushdata2 : DataType2[]  = [];
+
+
+  const testconnect = gql`
+              query Ships($offset: Int, $limit: Int,$find: ShipsFind) {
+                            ships(offset: $offset, limit: $limit,find: $find) {
+                              image
+                              name
+                              roles
+                              status
+                              active
+                              class
+                              url
+                            }
+                          }
+                    `;
+
+    const shopresultconnect = gql`
+                        query shipsresult{
+                          shipsResult {
+                                   result {
+                                     totalCount
+                                   }
+                                 }
+     }
+                    `;
+        
 
 // MANU TAB
 const items1: MenuProps['items'] = ['1', '2', '3'].map(key => ({
@@ -61,28 +91,65 @@ const items2: MenuProps['items'] = [UserOutlined, LaptopOutlined, NotificationOu
 
 
 
-// เรียกข้อมูลจาก VocabsQuery
-  const vocabs = gql(`
-    query VocabsQuery {
-        ships {
-          image
-          name
-          roles
-          status
-          active
-          class
-          url
-        }
-      }
-  `);
+
+
 // ใช้  Hook useQuery รับการ return object ที่ประกอบไปด้วย loading, error, data)
-  const { loading, error, data } = useQuery(vocabs);
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error :</p>;
+const shipresult = useQuery(shopresultconnect,{variables: {offset:0,  limit: 5 },
+  onError:(error1)=>{console.error(error1)},
+  onCompleted:(result)=>{ 
+    setshipsResult(result.shipsResult.result.totalCount)
+  }
+  }
+
+  );
+  if(shipresult.data){
+   
+  }
+  
+  var shipreturn  = useQuery(testconnect,  {
+    variables: {offset:0,  limit: 5 , find:{"name":""} },
+    onError:(error1)=>{console.error(error1)},
+
+    // ใช้งานแล้วไม่แสดงผล
+    onCompleted:(result)=>{
+                      result.ships.map((val:DataType) => 
+                          {arraypushdata.push ({
+                            image : val.image,
+                            name: val.name,
+                            roles: val.roles,
+                            status: val.status,
+                            active: val.active,
+                            class: val.class,
+                            url : val.url
+                        } )
+                        console.log(val,"dd");
+                        }
+          );
+    }
+  });
+  if(shipreturn.data){
+    shipreturn.data.ships.map((val:DataType) => 
+          {arraypushdata.push ({
+            image : val.image,
+            name: val.name,
+            roles: val.roles,
+            status: val.status,
+            active: val.active,
+            class: val.class,
+            url : val.url
+        } )
+        console.log(val,"dd");
+  }
+);
+  }
+  if (shipreturn.loading) return <p>Loading...</p>;
+  if (shipreturn.error) return <p>Error :</p>;
+
+
+  
 
 //สร้าง arraypushdata สำหรับรองรับ data ที่ return จาก useQuery
-  const arraypushdata : DataType[]  = [];
-  const arraypushdata2 : DataType2[]  = [];
+
 
   interface DataType {
     image: string;
@@ -99,6 +166,7 @@ const items2: MenuProps['items'] = [UserOutlined, LaptopOutlined, NotificationOu
     name: string;
     roles: Array<string>;
   }
+  
   
 // วางรูปแบบ columns ตาม Antd
   const columns: ColumnsType<DataType> = [
@@ -180,19 +248,12 @@ const items2: MenuProps['items'] = [UserOutlined, LaptopOutlined, NotificationOu
     }];
 
   // เรียกใช้ function map โดยให้ให้วิ่งตามข้อมูลใน missions ใส่ Object ไปใน arraypushdata
-  data.ships.map((val:DataType) => 
-    {arraypushdata.push ({
-      image : val.image,
-      name: val.name,
-      roles: val.roles,
-      status: val.status,
-      active: val.active,
-      class: val.class,
-      url : val.url
-  } )
-  console.log(val,"dd");
-}
-  );
+
+
+
+  
+  
+
 
 // modal test 1
 
@@ -213,7 +274,7 @@ const handleCancel = (e: any) => {
 };
 
 const showModal2 = (namedata:string) => {
-  data.ships.map((value:DataType)=>{
+  shipreturn.data.ships.map((value:DataType)=>{
     if(value.name == namedata){
       arraypushdata2.push({
         image : value.image,
@@ -241,14 +302,47 @@ const handleCancel2 = (e: any) => {
 const { Option } = Select;
 
 const onChange = (value: string) => {
+  console.log(`Appfunctio111n`, Appfunction(2));
   console.log(`selected ${value}`);
-  setdatasearch(value);
+  // setdatasearch(value);
 };
 
-const onSearch = (value: string) => {
-  console.log('search:', value);
+const onChange2 = (value: number) => {
+  let offsetdata:number;
+  offsetdata=(value-1)*5;
+
+  shipreturn.refetch({ offset:offsetdata,  limit:5})
+
+  // setdatasearch(value);
 };
 
+let timer: any;
+  const debounce = (func:Function, timeout: number) => {
+      if(timer){
+          clearTimeout(timer);
+          timer = undefined;
+      }
+      timer = setTimeout( func , timeout);
+  }
+
+  const onSearch = async(value: string) => {
+    const refetch_test = () => {
+      shipreturn.refetch({ offset:0,  limit:4 , find:{"name":value}})
+    };
+    debounce(refetch_test,2000)
+  };
+
+  const selectdata = <Select
+                        showSearch
+                        placeholder="Select a person"
+                        optionFilterProp="children"
+                        onChange={onChange}
+                        onSearch={onSearch}
+                        >
+                        { shipreturn.data?.ships?.map((item:any,index:number)=>
+                          <Option value={"7"}>{item.name}</Option>
+                        )}
+                      </Select>;
 
   return (
     <div>
@@ -259,25 +353,14 @@ const onSearch = (value: string) => {
       <Menu theme="dark" mode="horizontal" defaultSelectedKeys={['2']} items={items1} />
       <Row>
           <Col span={3}>  
-          <Select
-                showSearch
-                placeholder="Select a person"
-                optionFilterProp="children"
-                onChange={onChange}
-                onSearch={onSearch}
-                filterOption={(input, option) =>
-                  (option!.children as unknown as string).toLowerCase().includes(input.toLowerCase())
-                }
-              >
-                {arraypushdata.map((data:DataType)=>
-                    <Option key={1} value={data.name}>{data.roles}</Option>
-                )}
-         </Select>
+          
        </Col>
        <Col span={1}> </Col>
-          <Col span={10}> <Input  value={datasearch} /> </Col>
+          <Col span={5}> {selectdata} </Col>
+          <Col span={5}> <Input  value={datasearch} /> </Col>
           <Col span={1}> </Col>
-          <Col span={9}><Button type="primary" onClick={()=>showModal2(datasearch)}> tets</Button> </Col>
+          <Col span={4}><Button type="primary" onClick={()=>showModal2(datasearch)}> tets</Button> </Col>
+
       </Row>
     
     </Header>
@@ -299,7 +382,9 @@ const onSearch = (value: string) => {
         </Sider>
         <Content style={{ padding: '0 24px' }}>
               {/* รูปแบบตาม Antd */}
-              <Table columns={columns} dataSource={arraypushdata} size="small" id="widthhendres" />
+             
+              <Table columns={columns} dataSource={arraypushdata}  pagination={{ defaultCurrent:1 ,defaultPageSize: 10 , total:shipsResult , onChange:(e)=>{onChange2(e)} }} size="small" id="widthhendres" />
+        
         </Content>
       </Layout>
     </Content>
