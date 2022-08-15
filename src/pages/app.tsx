@@ -340,7 +340,7 @@ let timer: any;
                         onSearch={onSearch}
                         >
                         { shipreturn.data?.ships?.map((item:any,index:number)=>
-                          <Option value={"7"}>{item.name}</Option>
+                          <Option key={"test"} value={"7"}>{item.name}</Option>
                         )}
                       </Select>;
 
